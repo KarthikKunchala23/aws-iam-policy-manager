@@ -1,0 +1,19 @@
+policy_name: orders-dynamodb-policy
+
+description: IAM Policy for Orders DynamoDB
+
+template: managed_policy.j2
+
+path: /
+
+actions:
+  - dynamodb:GetItem
+  - dynamodb:PutItem
+  - dynamodb:UpdateItem
+
+resources:
+  - arn:aws:dynamodb:ap-south-1:123456789012:table/orders
+
+tags:
+  - Key: Environment
+    Value: Dev

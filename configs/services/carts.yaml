@@ -1,0 +1,24 @@
+policy_name: carts-dynamodb-policy
+
+description: IAM policy for Carts DynamoDB access
+
+template: managed_policy.j2
+
+path: /
+
+actions:
+  - dynamodb:GetItem
+  - dynamodb:PutItem
+  - dynamodb:UpdateItem
+  - dynamodb:DeleteItem
+  - dynamodb:Query
+
+resources:
+  - arn:aws:dynamodb:ap-south-1:123456789012:table/carts
+
+tags:
+  - Key: Environment
+    Value: Development
+
+  - Key: Service
+    Value: Carts
