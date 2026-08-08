@@ -8,7 +8,8 @@
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
-                "dynamodb:Query"
+                "dynamodb:Query",
+                "dynamodb:Scan"
             ],
             "Resource": [
                 "arn:aws:dynamodb:ap-south-1:123456789012:table/carts"

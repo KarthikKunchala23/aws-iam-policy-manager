@@ -12,6 +12,7 @@ actions:
   - dynamodb:UpdateItem
   - dynamodb:DeleteItem
   - dynamodb:Query
+  - dynamodb:Scan
 
 resources:
   - arn:aws:dynamodb:ap-south-1:123456789012:table/carts
