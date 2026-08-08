@@ -10,6 +10,7 @@ actions:
   - dynamodb:GetItem
   - dynamodb:PutItem
   - dynamodb:UpdateItem
+  - dynamodb:DeleteItem
 
 resources:
   - arn:aws:dynamodb:ap-south-1:123456789012:table/orders

@@ -18,7 +18,7 @@ def main():
 
     manager.sync()
 
-    logger.info("IAM Policy Manager completed successfully")
+    logger.info("IAM Policy Manager sync completed successfully")
 
 
 if __name__ == "__main__":

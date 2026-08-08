@@ -9,6 +9,7 @@ class Policy:
     """
 
     policy_name: str
+    # arn: str
     description: str
     document: dict[str, Any]
     path: str = "/"
@@ -23,6 +24,7 @@ class Policy:
         """
         return {
             "policy_name": self.policy_name,
+            # "arn": self.arn,
             "description": self.description,
             "document": self.document,
             "path": self.path,
