@@ -38,6 +38,7 @@ on:
             config_file:
                 description: 'Configuration file to deploy'
                 required: true
+                type: string
                 default: 'config.yaml'
 
 jobs:
