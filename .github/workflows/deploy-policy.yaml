@@ -18,7 +18,12 @@ on:
             working_directory:
                 description: 'Working directory for the deployment'
                 required: true
-                default: 'aws-iam-policy-manager/src/iam_policy_manager'
+                default: 'aws-iam-policy-manager'
+
+            python_module_path:
+                description: 'Python module path for the deployment'
+                required: true
+                default: 'iam_policy_manager.main'
 
             environment:
                 description: 'Environment to deploy to'
@@ -30,14 +35,10 @@ on:
                     - staging
                     - prod
 
-            config_file:
+            config_file_path:
                 description: 'Configuration file to deploy'
                 required: true
-                default: 'config.yaml'
-                type: choice
-                options:
-                    - config.yaml
-                    - carts.yaml
+                default: 'configs/services/config.yaml'
 
 jobs:
   deploy:
@@ -64,4 +65,4 @@ jobs:
 
       - name: Deploy policy
         run: |
-          python ${{ github.event.inputs.working_directory }}/main.py  ${{ github.event.inputs.config_file }}
+          python -m ${{ github.event.inputs.python_module_path }}  ${{ github.event.inputs.config_file_path }}
