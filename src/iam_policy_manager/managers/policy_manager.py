@@ -18,7 +18,7 @@ class PolicyManager:
     def __init__(self) -> None:
         self.file_service = FileService()
 
-    def sync(self) -> None:
+    def sync(self, config_files: list[str]) -> None:
         """
         Generate IAM policies from all YAML configuration files.
         """
@@ -29,12 +29,32 @@ class PolicyManager:
 
         logger.info("Reading configurations from %s", config_directory)
 
-        for config_file in config_directory.glob("*.yaml"):
+        # for config_file in config_directory.glob("*.yaml"):
+        for config_file in config_files:
+            
+            config_path = (config_directory / config_file).resolve()
 
-            logger.info("Processing %s", config_file.name)
+            config_directory = config_directory.resolve()
+
+            if config_directory not in config_path.parents:
+                raise ValueError(
+                    f"Configuration must be inside {config_directory}"
+                    )
+            
+            if not config_path.exists():
+                raise FileNotFoundError(
+                    f"Configuration file not found: {config_path}"
+                    )
+
+            if config_path.suffix not in {".yaml", ".yml"}:
+                raise ValueError(
+                    f"Configuration file must be YAML: {config_path}"
+                    )
+
+            logger.info("Processing %s", config_path.name)
 
             try:
-                config = load_config(config_file)
+                config = load_config(config_path)
 
                 policy = render_policy(
                     config,
@@ -48,13 +68,13 @@ class PolicyManager:
                     output
                 )
 
+                self.sync_policy_to_aws(policy)
+
             except Exception:
                 logger.exception(
                     "Failed to process %s",
                     config_file.name
                 )
-
-            self.sync_policy_to_aws(policy)
 
 
     def sync_policy_to_aws(self, policy) -> None:
