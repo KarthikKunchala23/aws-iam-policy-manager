@@ -73,7 +73,7 @@ class PolicyManager:
             except Exception:
                 logger.exception(
                     "Failed to process %s",
-                    config_file.name
+                    config_path.name
                 )
 
 
