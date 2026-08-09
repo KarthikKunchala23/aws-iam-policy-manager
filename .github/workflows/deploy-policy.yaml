@@ -1,0 +1,67 @@
+---
+name: Deploy Policy
+
+on:
+    workflow_dispatch:
+        inputs:
+
+            aws_region:
+                description: 'AWS region to deploy to'
+                required: true
+                default: 'ap-south-1'
+
+            aws_account_id:
+                description: 'AWS account ID to deploy to'
+                required: true
+                default: '897722700244'
+
+            working_directory:
+                description: 'Working directory for the deployment'
+                required: true
+                default: 'aws-iam-policy-manager/src/iam_policy_manager'
+
+            environment:
+                description: 'Environment to deploy to'
+                required: true
+                default: 'dev'
+                type: choice
+                options:
+                    - dev
+                    - staging
+                    - prod
+
+            config_file:
+                description: 'Configuration file to deploy'
+                required: true
+                default: 'config.yaml'
+                type: choice
+                options:
+                    - config.yaml
+                    - carts.yaml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            role-to-assume: arn:aws:iam::${{ github.event.inputs.aws_account_id }}:role/gp-terraform-execution
+            aws-region: ${{ github.event.inputs.aws_region }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ${{ github.event.inputs.working_directory }}/requirements.txt
+
+      - name: Deploy policy
+        run: |
+          python ${{ github.event.inputs.working_directory }}/main.py  ${{ github.event.inputs.config_file }}
