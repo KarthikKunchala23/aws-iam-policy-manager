@@ -6,6 +6,7 @@ mappings:
     dev: "897722700244"
     stage: "897722700244"
     prod: "897722700244"
+
   team_code:
     orders: orders
     catalog: catalog
@@ -14,20 +15,39 @@ mappings:
     cart: cart
 
 policy_generators:
+
   - name: orders_dynamodb_read
     template_path: ../../templates/{environment}/orders_dynamodb_read.json
     target_policy_path: ../../policies/generated/{environment}/{team}/{account}_Orders_Dynamodb_Read.json
+
     substitute:
-      region: 'ap-south-1'
+      region: ap-south-1
+
       environment:
         - dev
         - stage
         - prod
+
       team:
         - orders
-        - catalog
-        - checkout
-        - cart
-        - ui
+
       account: mappings(account_id, environment)
-      team_code: mappings(team_code, team) 
+      team_code: mappings(team_code, team)
+
+  - name: catalog_dynamodb_read
+    template_path: ../../templates/{environment}/catalog_dynamodb_read.json
+    target_policy_path: ../../policies/generated/{environment}/{team}/{account}_Catalog_Dynamodb_Read.json
+
+    substitute:
+      region: ap-south-1
+
+      environment:
+        - dev
+        - stage
+        - prod
+
+      team:
+        - catalog
+
+      account: mappings(account_id, environment)
+      team_code: mappings(team_code, team)

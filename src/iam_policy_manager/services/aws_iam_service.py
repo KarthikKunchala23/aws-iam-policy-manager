@@ -8,9 +8,9 @@ class AWSIAMService:
 
         self.client = boto3.client("iam")
 
-        sts_client = boto3.client("sts")
+        self.sts_client = boto3.client("sts")
 
-        self.account_id = sts_client.get_caller_identity()["Account"]
+        self.account_id = self.sts_client.get_caller_identity()["Account"]
 
     def get_policy_arn(self, policy_name: str) -> str:
 

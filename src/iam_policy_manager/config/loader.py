@@ -38,6 +38,11 @@ def load_config(config_path: Path | None = None) -> dict:
         with config_path.open("r", encoding="utf-8") as file:
             config = yaml.safe_load(file) or {}
 
+        if not isinstance(config, dict):
+            raise ValueError(
+                f"Invalid Confiruration Format: {config_path}"
+            )
+
         logger.info("Configuration loaded successfully.")
 
         validate_config(config)

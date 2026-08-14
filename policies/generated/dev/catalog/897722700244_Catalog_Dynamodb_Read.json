@@ -4,10 +4,11 @@
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:GetItem"
+                "dynamodb:GetItem",
+                "dynamodb:PutItem"
             ],
             "Resource": [
-                "arn:aws:dynamodb:ap-south-1:897722700244:table/orders-dev"
+                "arn:aws:dynamodb:ap-south-1:897722700244:table/catalog-dev"
             ]
         }
     ]
