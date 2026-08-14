@@ -1,10 +1,33 @@
-policy_name: orders-dynamodb-policy
+---
+target_policy_path: ../../policies
 
-description: Orders DynamoDB Access
+mappings:
+  account_id:
+    dev: "897722700244"
+    stage: "897722700244"
+    prod: "897722700244"
+  team_code:
+    orders: orders
+    catalog: catalog
+    checkout: checkout
+    ui: ui
+    cart: cart
 
-actions:
-  - dynamodb:GetItem
-  - dynamodb:PutItem
-
-resources:
-  - arn:aws:dynamodb:ap-south-1:123456789012:table/orders
+policy_generators:
+  - name: orders_dynamodb_read
+    template_path: ../../templates/{environment}/orders_dynamodb_read.json
+    target_policy_path: ../../policies/generated/{environment}/{team}/{account}_Orders_Dynamodb_Read.json
+    substitute:
+      region: 'ap-south-1'
+      environment:
+        - dev
+        - stage
+        - prod
+      team:
+        - orders
+        - catalog
+        - checkout
+        - cart
+        - ui
+      account: mappings(account_id, environment)
+      team_code: mappings(team_code, team) 
