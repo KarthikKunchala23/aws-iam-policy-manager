@@ -877,13 +877,7 @@ Run the application using the project's configured entry point.
 For example:
 
 ```bash
-python -m src.iam_policy_manager.main
-```
-
-If the application accepts a configuration file argument:
-
-```bash
-python -m src.iam_policy_manager.main config.yaml
+python -m iam_policy_manager.main services/config.yaml
 ```
 
 The exact command can be adjusted according to the CLI implementation.
