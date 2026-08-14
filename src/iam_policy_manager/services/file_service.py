@@ -12,27 +12,46 @@ class FileService:
     Handles reading and writing policy files.
     """
 
-    def __init__(self, policy_directory: Path | None = None):
-        self.policy_directory = policy_directory or Path("policies/generated")
-        self.policy_directory.mkdir(parents=True, exist_ok=True)
-
-    def save_policy(self, policy: Policy) -> Path:
+    def save_policy(
+        self,
+        policy: Policy,
+        target_path: Path
+    ) -> Path:
         """
-        Save a policy document to disk.
+        Save a policy document to the specified target path.
         """
 
-        file_path = self.policy_directory / f"{policy.policy_name}.json"
+        target_path.parent.mkdir(
+            parents=True,
+            exist_ok=True
+        )
 
-        with file_path.open("w", encoding="utf-8") as file:
-            json.dump(policy.document, file, indent=4)
+        with target_path.open(
+            "w",
+            encoding="utf-8"
+        ) as file:
 
-        logger.info("Saved policy to %s", file_path)
+            json.dump(
+                policy.document,
+                file,
+                indent=4
+            )
 
-        return file_path
+        logger.info(
+            "Saved policy to %s",
+            target_path
+        )
 
-    def load_policy(self, policy_name: str) -> dict:
+        return target_path
 
-        file_path = self.policy_directory / f"{policy_name}.json"
+    def load_policy(
+        self,
+        policy_path: Path
+    ) -> dict:
 
-        with file_path.open("r", encoding="utf-8") as file:
+        with policy_path.open(
+            "r",
+            encoding="utf-8"
+        ) as file:
+
             return json.load(file)

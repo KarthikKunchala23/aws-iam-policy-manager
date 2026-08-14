@@ -5,10 +5,9 @@ import yaml
 logger = logging.getLogger(__name__)
 
 REQUIRED_FIELDS = [
-    "policy_name",
-    "description",
-    "actions",
-    "resources"
+    "target_policy_path",
+    "mappings",
+    "policy_generators",
 ]
 
 
@@ -39,6 +38,11 @@ def load_config(config_path: Path | None = None) -> dict:
         with config_path.open("r", encoding="utf-8") as file:
             config = yaml.safe_load(file) or {}
 
+        if not isinstance(config, dict):
+            raise ValueError(
+                f"Invalid Confiruration Format: {config_path}"
+            )
+
         logger.info("Configuration loaded successfully.")
 
         validate_config(config)
@@ -55,21 +59,50 @@ def load_config(config_path: Path | None = None) -> dict:
 
 def validate_config(config: dict) -> None:
     """
-    Validate the loaded configuration.
+    Validate the central IAM policy manager configuration.
 
     Args:
-        config: Configuration dictionary.
+        config: Loaded YAML configuration.
 
     Raises:
-        ValueError: If required fields are missing.
+        ValueError: If the configuration structure is invalid.
     """
 
     for field in REQUIRED_FIELDS:
         if field not in config:
-            raise ValueError(f"Missing required configuration: '{field}'")
+            raise ValueError(
+                f"Missing required configuration: '{field}'"
+            )
 
-    if not isinstance(config["actions"], list):
-        raise ValueError("'actions' must be a list.")
+    if not isinstance(config["mappings"], dict):
+        raise ValueError("'mappings' must be a dictionary.")
 
-    if not isinstance(config["resources"], list):
-        raise ValueError("'resources' must be a list.")
+    if not isinstance(config["policy_generators"], list):
+        raise ValueError("'policy_generators' must be a list.")
+
+    for generator in config["policy_generators"]:
+
+        if not isinstance(generator, dict):
+            raise ValueError(
+                "Each policy generator must be a dictionary."
+            )
+
+        required_generator_fields = [
+            "name",
+            "template_path",
+            "target_policy_path",
+            "substitute",
+        ]
+
+        for field in required_generator_fields:
+            if field not in generator:
+                raise ValueError(
+                    f"Policy generator is missing required field: "
+                    f"'{field}'"
+                )
+
+        if not isinstance(generator["substitute"], dict):
+            raise ValueError(
+                f"'substitute' must be a dictionary in generator "
+                f"'{generator['name']}'."
+            )
