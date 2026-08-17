@@ -84,3 +84,19 @@ policy_generators:
 
       account: mappings(account_id, environment)
       team_code: mappings(team_code, team)
+
+  - name: karpenter_ec2_read_policy
+    template_path: ../../templates/{environment}/karpenter_ec2_read_policy.json
+    target_policy_path: ../../policies/generated/{environment}/{team}/{account}_karpenter_ec2_read_policy.json
+
+    substitute:
+      region: ap-south-1
+
+      environment:
+        - dev
+
+      team:
+        - platform
+
+      account: mappings(account_id, environment)
+      team_code: mappings(team_code, team)
