@@ -107,16 +107,14 @@
         "StringLike": {
           "aws:ResourceTag/karpenter.sh/nodepool": "*"
         },
-        "StringEqualsIfExists": {
-          "aws:RequestTag/eks:eks-cluster-name": "gp-eks-{{ environment }}-cluster"
-        },
-        "ForAllValues:StringEquals": {
-          "aws:TagKeys": [
-            "eks:eks-cluster-name",
-            "karpenter.sh/nodeclaim",
-            "Name"
-          ]
-        }
+        "aws:RequestTag/eks:eks-cluster-name": "gp-eks-{{ environment }}-cluster"
+      },
+      "ForAllValues:StringEquals": {
+        "aws:TagKeys": [
+          "eks:eks-cluster-name",
+          "karpenter.sh/nodeclaim",
+          "Name"
+        ]
       }
     },
     {
@@ -173,10 +171,7 @@
     {
       "Sid": "AllowPricingReadActions",
       "Effect": "Allow",
-      "Action": [
-        "pricing:GetProducts"
-      ],
-      "Resource": "*"
+      "Action": "*"
     },
     {
       "Sid": "AllowInterruptionQueueActions",
@@ -188,7 +183,7 @@
         "sqs:ReceiveMessage"
       ],
       "Resource": [
-        "{{ karpenter_interruption_queue_arn }}"
+        "arn:aws:sqs:{{ region }}:{{ account }}:gp-eks-{{ environment }}-karpenter-interruption"
       ]
     },
     {
@@ -198,7 +193,7 @@
         "iam:PassRole"
       ],
       "Resource": [
-        "{{ karpenter_node_role_arn }}"
+        "arn:aws:iam::{{ account }}:role/gp-eks-{{ environment }}-karpenter-node"
       ],
       "Condition": {
         "StringEquals": {
