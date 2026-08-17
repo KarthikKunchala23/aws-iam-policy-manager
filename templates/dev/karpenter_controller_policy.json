@@ -107,14 +107,16 @@
         "StringLike": {
           "aws:ResourceTag/karpenter.sh/nodepool": "*"
         },
-        "aws:RequestTag/eks:eks-cluster-name": "gp-eks-{{ environment }}-cluster"
-      },
-      "ForAllValues:StringEquals": {
-        "aws:TagKeys": [
-          "eks:eks-cluster-name",
-          "karpenter.sh/nodeclaim",
-          "Name"
-        ]
+        "StringEqualsIfExists": {
+          "aws:RequestTag/eks:eks-cluster-name": "gp-eks-{{ environment }}-cluster"
+        },
+        "ForAllValues:StringEquals": {
+          "aws:TagKeys": [
+            "eks:eks-cluster-name",
+            "karpenter.sh/nodeclaim",
+            "Name"
+          ]
+        }
       }
     },
     {
@@ -171,7 +173,10 @@
     {
       "Sid": "AllowPricingReadActions",
       "Effect": "Allow",
-      "Action": "*"
+      "Action": [
+        "pricing:GetProducts"
+      ],
+      "Resource": "*"
     },
     {
       "Sid": "AllowInterruptionQueueActions",
