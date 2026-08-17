@@ -1,0 +1,128 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowInterruptionQueueActions",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "arn:aws:sqs:{{ region }}:{{ account }}:gp-eks-{{ environment }}-karpenter-interruption"
+      ]
+    },
+    {
+      "Sid": "AllowPassingInstanceRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::{{ account }}:role/gp-eks-{{ environment }}-karpenter-node"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "ec2.amazonaws.com",
+            "ec2.amazonaws.com.cn"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowScopedInstanceProfileCreationActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateInstanceProfile"
+      ],
+      "Resource": [
+        "arn:aws:iam::{{ account }}:instance-profile/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/kubernetes.io/cluster/gp-eks-{{ environment }}-cluster": "owned",
+          "aws:RequestTag/eks:eks-cluster-name": "gp-eks-{{ environment }}-cluster",
+          "aws:RequestTag/topology.kubernetes.io/region": "{{ region }}"
+        },
+        "StringLike": {
+          "aws:RequestTag/karpenter.k8s.aws/ec2nodeclass": "*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowScopedInstanceProfileTagActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:TagInstanceProfile"
+      ],
+      "Resource": [
+        "arn:aws:iam::{{ account }}:instance-profile/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/kubernetes.io/cluster/gp-eks-{{ environment }}-cluster": "owned",
+          "aws:ResourceTag/topology.kubernetes.io/region": "{{ region }}",
+          "aws:RequestTag/kubernetes.io/cluster/gp-eks-{{ environment }}-cluster": "owned",
+          "aws:RequestTag/eks:eks-cluster-name": "gp-eks-{{ environment }}-cluster",
+          "aws:RequestTag/topology.kubernetes.io/region": "{{ region }}"
+        },
+        "StringLike": {
+          "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass": "*",
+          "aws:RequestTag/karpenter.k8s.aws/ec2nodeclass": "*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowScopedInstanceProfileActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:AddRoleToInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:DeleteInstanceProfile"
+      ],
+      "Resource": [
+        "arn:aws:iam::{{ account }}:instance-profile/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/kubernetes.io/cluster/gp-eks-{{ environment }}-cluster": "owned",
+          "aws:ResourceTag/topology.kubernetes.io/region": "{{ region }}"
+        },
+        "StringLike": {
+          "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass": "*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowInstanceProfileReadActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetInstanceProfile"
+      ],
+      "Resource": [
+        "arn:aws:iam::{{ account }}:instance-profile/*"
+      ]
+    },
+    {
+      "Sid": "AllowUnscopedInstanceProfileListAction",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListInstanceProfiles"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAPIServerEndpointDiscovery",
+      "Effect": "Allow",
+      "Action": [
+        "eks:DescribeCluster"
+      ],
+      "Resource": [
+        "arn:aws:eks:{{ region }}:{{ account }}:cluster/gp-eks-{{ environment }}-cluster"
+      ]
+    }
+  ]
+}
