@@ -8,7 +8,7 @@
                 "dynamodb:PutItem"
             ],
             "Resource": [
-                "arn:aws:dynamodb:ap-south-1:897722700244:table/catalog-dev"
+                "arn:aws:dynamodb:ap-south-1:897722700244:table/catalog-dev-dynamodb"
             ]
         }
     ]
