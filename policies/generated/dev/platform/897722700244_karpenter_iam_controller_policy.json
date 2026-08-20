@@ -11,7 +11,7 @@
                 "sqs:ReceiveMessage"
             ],
             "Resource": [
-                "arn:aws:sqs:ap-south-1:897722700244:gp-eks-dev-cluster-karpenter-interruption"
+                "arn:aws:sqs:ap-south-1:897722700244:gp-eks-dev-karpenter-interruption"
             ]
         },
         {
@@ -21,7 +21,7 @@
                 "iam:PassRole"
             ],
             "Resource": [
-                "arn:aws:iam::897722700244:role/gp-eks-dev-cluster-karpenter-node-role"
+                "arn:aws:iam::897722700244:role/gp-eks-dev-karpenter-node"
             ],
             "Condition": {
                 "StringEquals": {
