@@ -18,7 +18,7 @@ on:
       working_directory:
         description: 'Working directory for the deployment'
         required: true
-        default: 'src'
+        default: 'iam_policy_manager'
 
       python_module_path:
         description: 'Python module path for the deployment'
