@@ -18,7 +18,7 @@ on:
       working_directory:
         description: 'Working directory for the deployment'
         required: true
-        default: 'iam_policy_manager'
+        default: 'src'
 
       python_module_path:
         description: 'Python module path for the deployment'
@@ -78,7 +78,7 @@ jobs:
 
       - name: Deploy policy
         run: |
-          python -m ${{ github.event.inputs.working_directory }}/main ${{ github.event.inputs.config_file }}
+          python -m ${{ github.event.inputs.python_module_path }} ${{ github.event.inputs.config_file }}
 
       - name: Check generated policy changes
         run: |
