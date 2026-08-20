@@ -78,7 +78,7 @@ jobs:
 
       - name: Deploy policy
         run: |
-          python -m ${{ github.event.inputs.working_directory }}/main.py ${{ github.event.inputs.config_file }}
+          python -m ${{ github.event.inputs.working_directory }}/main ${{ github.event.inputs.config_file }}
 
       - name: Check generated policy changes
         run: |
