@@ -8,7 +8,7 @@
         "dynamodb:PutItem"
       ],
       "Resource": [
-        "arn:aws:dynamodb:{{ region }}:{{ account }}:table/{{ team }}-{{ environment }}"
+        "arn:aws:dynamodb:{{ region }}:{{ account }}:table/{{ team }}-{{ environment }}-dynamodb"
       ]
     }
   ]

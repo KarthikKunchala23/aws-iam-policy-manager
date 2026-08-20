@@ -2,66 +2,71 @@
 name: Deploy Policy
 
 on:
-    workflow_dispatch:
-        inputs:
+  workflow_dispatch:
+    inputs:
 
-            aws_region:
-                description: 'AWS region to deploy to'
-                required: true
-                default: 'ap-south-1'
+      aws_region:
+        description: 'AWS region to deploy to'
+        required: true
+        default: 'ap-south-1'
 
-            aws_account_id:
-                description: 'AWS account ID to deploy to'
-                required: true
-                default: '897722700244'
+      aws_account_id:
+        description: 'AWS account ID to deploy to'
+        required: true
+        default: '897722700244'
 
-            working_directory:
-                description: 'Working directory for the deployment'
-                required: true
-                default: 'src'
+      working_directory:
+        description: 'Working directory for the deployment'
+        required: true
+        default: 'src'
 
-            python_module_path:
-                description: 'Python module path for the deployment'
-                required: true
-                default: 'iam_policy_manager.main'
+      python_module_path:
+        description: 'Python module path for the deployment'
+        required: true
+        default: 'iam_policy_manager.main'
 
-            environment:
-                description: 'Environment to deploy to'
-                required: true
-                default: 'dev'
-                type: choice
-                options:
-                    - dev
-                    - staging
-                    - prod
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
 
-            config_file:
-                description: 'Configuration file to deploy'
-                required: true
-                type: string
-                default: 'services/config.yaml'
+      config_file:
+        description: 'Configuration file to deploy'
+        required: true
+        type: string
+        default: 'services/config.yaml'
 
 jobs:
+
   deploy:
     runs-on: ubuntu-latest
+
     environment: ${{ github.event.inputs.environment }}
 
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
+
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-            role-to-assume: arn:aws:iam::${{ github.event.inputs.aws_account_id }}:role/gp-terraform-execution
-            aws-region: ${{ github.event.inputs.aws_region }}
+          role-to-assume: arn:aws:iam::${{ github.event.inputs.aws_account_id }}:role/gp-terraform-execution
+          aws-region: ${{ github.event.inputs.aws_region }}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -72,5 +77,34 @@ jobs:
           pip install -e .
 
       - name: Deploy policy
+        working-directory: ${{ github.event.inputs.working_directory }}
         run: |
-          python -m ${{ github.event.inputs.python_module_path }}  ${{ github.event.inputs.config_file }}
+          python -m ${{ github.event.inputs.python_module_path }} \
+            ${{ github.event.inputs.config_file }}
+
+      - name: Check generated policy changes
+        run: |
+          echo "Git status:"
+          git status --short
+
+          echo ""
+          echo "Changed files:"
+          git diff --name-only
+
+      - name: Commit generated policies
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add manager/policies/generated/
+
+          if git diff --cached --quiet; then
+            echo "No policy changes detected."
+            exit 0
+          fi
+
+          git commit -m "chore: update generated IAM policies"
+
+      - name: Push policy changes
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
