@@ -11,7 +11,7 @@
         "sqs:ReceiveMessage"
       ],
       "Resource": [
-        "arn:aws:sqs:{{ region }}:{{ account }}:gp-eks-{{ environment }}-cluster-karpenter-interruption"
+        "arn:aws:sqs:{{ region }}:{{ account }}:gp-eks-{{ environment }}-karpenter-interruption"
       ]
     },
     {
@@ -21,7 +21,7 @@
         "iam:PassRole"
       ],
       "Resource": [
-        "arn:aws:iam::{{ account }}:role/gp-eks-{{ environment }}-cluster-karpenter-node-role"
+        "arn:aws:iam::{{ account }}:role/gp-eks-{{ environment }}-karpenter-node"
       ],
       "Condition": {
         "StringEquals": {
