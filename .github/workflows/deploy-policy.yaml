@@ -79,7 +79,7 @@ jobs:
       - name: Deploy policy
         working-directory: ${{ github.event.inputs.working_directory }}
         run: |
-          python -m ${{ github.event.inputs.python_module_path }} \
+          python -m ${{ github.event.inputs.working_directory }}/main.py \
             ${{ github.event.inputs.config_file }}
 
       - name: Check generated policy changes
